@@ -10,9 +10,9 @@
     <h1>welcome to socket chat room</h1>
 </body>
 <script>
-    function hello() {
-        console.log('hello world');
-    };
-    hello();
+    const socket = new WebSocket("ws://localhost:8080");
+    socket.onopen = () => {
+        console.log('connected')
+    }
 </script>
 </html>

@@ -1,13 +1,13 @@
-import { MessageBody, SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import { Server } from 'ws';
 
-@WebSocketGateway(80, { namespace: 'events' })
+@WebSocketGateway(8080)
 export class EventGateway {
-  @SubscribeMessage('events')
-  handleEvent(@MessageBody() data: string): string {
-    return data;
-  }
+  @WebSocketServer()
+  server: Server
 
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+  @SubscribeMessage('event')
+  onEvent(client: any, data: any) {
+    return 'hello world';
   }
 }
