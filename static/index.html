@@ -12,7 +12,18 @@
 <script>
     const socket = new WebSocket("ws://localhost:8080");
     socket.onopen = () => {
-        console.log('connected')
+        console.log('connected');
+
+        socket.send(
+            JSON.stringify({
+                event: 'event',
+                data: 'data hello haha',
+            }),
+        );
+
+        socket.onmessage = (data) => {
+            console.log(data.data);
+        };
     }
 </script>
 </html>

@@ -8,6 +8,8 @@ export class EventGateway {
 
   @SubscribeMessage('event')
   onEvent(client: any, data: any) {
+    console.log(data);
+    
     return 'hello world';
   }
 }
