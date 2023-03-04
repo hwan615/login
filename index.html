@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- Babel Script -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/jsx">
+        const app = document.getElementById("app");
+    
+        const b = ["b", "c"]
+        
+        function Header({ title }) {
+            return <h1>`hello header from homepage ${title}`</h1>;
+        }
+
+        function Homepage() {
+            const name = ["cha", "young", "hwan"];
+            console.log(name);
+            console.log(b);
+
+            const [likes, setLikes] = React.useState(0);
+
+            function handleClick() {
+                setLikes(likes + 1);
+            }
+
+            return (
+                <div>
+                    <Header title="props from homepage" />
+                    <ul>
+                        {name.map(x => (
+                            <li key={x}>{x}</li>
+                        ))}
+                    </ul>
+
+                    <button onClick={handleClick}>Like{likes}</button>
+                </div>
+            );
+        }
+    
+        ReactDOM.render(<Homepage />, app);
+    </script>
+</body>
+</html>
