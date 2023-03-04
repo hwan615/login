@@ -3,20 +3,23 @@ import { useState, useEffect } from 'react';
 export default function HomePage() {
 
   const [socket, setSocket] = useState();
+  const [user, setUser] = useState();
 
   useEffect(() => {
-    console.log(socket)
     socket ? 
     socket.onopen = () => {
       socket.send(
         JSON.stringify({
           event: 'connect',
-          data: 'websocket connected to next.js',
+          data: { name: 'websocket connected to next.js', value: 'hello'}
         })
       );
 
       socket.onmessage = (data) => {
-        console.log(data.data);
+        console.log(JSON.parse(data.data).type);
+        if (JSON.parse(data.data).type === "notification") {
+          setUser(JSON.parse(data.data).msg)
+        }
       };
     } :
     console.log('websocket connection not found')
@@ -40,6 +43,7 @@ export default function HomePage() {
     <div>
       <h1>{socket ? 'connected to websocket' : 'connect websocket to start chat service'}</h1>
       { socket ? <button onClick={sendMessage}>send message</button> : <div></div>}
+      <h1>{user}</h1>
       <button onClick={makeSocketConnection}>connect websocket</button>
     </div>
   )

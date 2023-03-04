@@ -7,10 +7,16 @@ export class EventGateway {
   server: Server
 
   @SubscribeMessage('connect')
-  onConnect(client: any, dat: any) {
-    console.log(client);
+  onConnect(client: any, dat: any, mets: any) {
+    console.log(this.server.clients);
     
-    console.log(dat);
+    this.server.clients.forEach(client => {
+      client.send(JSON.stringify({
+        type: 'notification',
+        msg: `새로운 유저가 접속하였습니다. ${this.server.clients.size} 명`
+      }))
+    })
+
     return 'websocket connection made';
   }
 
