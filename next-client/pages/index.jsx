@@ -1,27 +1,46 @@
-import { useState } from 'react';
-function Header({ title }) {
-    return <h1>{title ? title : 'Default title'}</h1>;
-  }
+import { useState, useEffect } from 'react';
 
 export default function HomePage() {
-  const names = ['Ada Lovelace', 'Grace Hopper', 'Margaret Hamilton'];
 
-  const [likes, setLikes] = useState(0);
+  const [socket, setSocket] = useState();
 
-  function handleClick() {
-    setLikes(likes + 1);
+  useEffect(() => {
+    console.log(socket)
+    socket ? 
+    socket.onopen = () => {
+      socket.send(
+        JSON.stringify({
+          event: 'connect',
+          data: 'websocket connected to next.js',
+        })
+      );
+
+      socket.onmessage = (data) => {
+        console.log(data.data);
+      };
+    } :
+    console.log('websocket connection not found')
+  }, [socket])
+
+  const makeSocketConnection = () => {
+    setSocket(new WebSocket("ws://localhost:8080"));
+  };
+
+  const sendMessage = () => {
+    console.log('hello')
+    socket.send(
+      JSON.stringify({
+        event: 'event',
+        data: 'send message using button'
+      })
+    )
   }
 
   return (
     <div>
-      <Header title="Develop. Preview. Shipd. 🚀" />
-      <ul>
-        {names.map((name) => (
-          <li key={name}>{name}</li>
-        ))}
-      </ul>
-
-      <button onClick={handleClick}>Like ({likes})</button>
+      <h1>{socket ? 'connected to websocket' : 'connect websocket to start chat service'}</h1>
+      { socket ? <button onClick={sendMessage}>send message</button> : <div></div>}
+      <button onClick={makeSocketConnection}>connect websocket</button>
     </div>
-  );
-}
+  )
+};
