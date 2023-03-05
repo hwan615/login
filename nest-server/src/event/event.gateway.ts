@@ -24,6 +24,13 @@ export class EventGateway {
   onEvent(client: any, data: any) {
     console.log(data);
     
+    this.server.clients.forEach(client => {
+      client.send(JSON.stringify({
+        type: 'chat',
+        msg: data
+      }))
+    })
+
     return 'hello world';
   }
 }

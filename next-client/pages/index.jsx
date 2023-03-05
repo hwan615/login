@@ -3,7 +3,9 @@ import { useState, useEffect } from 'react';
 export default function HomePage() {
 
   const [socket, setSocket] = useState();
+  const [message, setMessage] = useState('');
   const [user, setUser] = useState();
+  const [chat, setChat] = useState([]);
 
   useEffect(() => {
     socket ? 
@@ -16,9 +18,12 @@ export default function HomePage() {
       );
 
       socket.onmessage = (data) => {
-        console.log(JSON.parse(data.data).type);
-        if (JSON.parse(data.data).type === "notification") {
-          setUser(JSON.parse(data.data).msg)
+        if (JSON.parse(data.data).type === 'chat') {
+          console.log([...chat, JSON.parse(data.data).msg])
+          setChat([...chat, JSON.parse(data.data).msg]);
+        } else {
+          console.log('dd')
+          setUser(JSON.parse(data.data).msg);
         }
       };
     } :
@@ -30,20 +35,39 @@ export default function HomePage() {
   };
 
   const sendMessage = () => {
-    console.log('hello')
     socket.send(
       JSON.stringify({
         event: 'event',
-        data: 'send message using button'
+        data: message,
       })
     )
+  }
+
+  const changeMessage = (e) => {
+    setMessage(e.target.value)
   }
 
   return (
     <div>
       <h1>{socket ? 'connected to websocket' : 'connect websocket to start chat service'}</h1>
-      { socket ? <button onClick={sendMessage}>send message</button> : <div></div>}
       <h1>{user}</h1>
+      { 
+        socket 
+          ? <div>
+              <ul>
+                {
+                  chat.map(c => (
+                    <li key={c}>{c}</li>
+                  ))
+                }
+              </ul>
+              <input type="text" value={message} onChange={changeMessage} />
+              <button onClick={sendMessage}>send message</button>
+            </div>
+          : <div></div> 
+      }
+      <br />
+      <br />
       <button onClick={makeSocketConnection}>connect websocket</button>
     </div>
   )
